@@ -34,6 +34,15 @@ export default function CampaignsPage() {
     fetchCampaigns()
   }, [])
 
+  // Poll for updates every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchCampaigns()
+    }, 5 * 60 * 1000) // 5 minutes
+
+    return () => clearInterval(interval)
+  }, [])
+
   const fetchCampaigns = async () => {
     try {
       const res = await fetch('/api/campaigns/stats')

@@ -23,6 +23,15 @@ export default function AccountsPage() {
     fetchAccounts()
   }, [])
 
+  // Poll for updates every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAccounts()
+    }, 5 * 60 * 1000) // 5 minutes
+
+    return () => clearInterval(interval)
+  }, [])
+
   useEffect(() => {
     filterAccounts()
   }, [accounts, filters])

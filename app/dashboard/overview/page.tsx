@@ -39,6 +39,15 @@ export default function OverviewPage() {
     fetchData()
   }, [timePeriod])
 
+  // Poll for updates every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData()
+    }, 5 * 60 * 1000) // 5 minutes
+
+    return () => clearInterval(interval)
+  }, [timePeriod])
+
   const fetchData = async () => {
     try {
       // Calculate date range based on selected time period

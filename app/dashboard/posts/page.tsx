@@ -42,6 +42,15 @@ export default function PostsPage() {
     fetchData()
   }, [])
 
+  // Poll for updates every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData()
+    }, 5 * 60 * 1000) // 5 minutes
+
+    return () => clearInterval(interval)
+  }, [])
+
   // Update filter when URL params change (e.g., when navigating from overview page)
   useEffect(() => {
     if (typeof window !== 'undefined') {
