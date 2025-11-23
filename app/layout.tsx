@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Surge Dashboard",
   description: "Internal dashboard for data visualization",
   icons: {
-    icon: "/surge.png",
+    icon: "/surgeicon.png",
   },
 }
 

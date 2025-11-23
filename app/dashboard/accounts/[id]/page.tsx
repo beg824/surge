@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { ExternalLink } from "lucide-react"
 import type { Account } from "@/lib/types/database"
 import type { TikTokPostingWithAccountAndClient } from "@/lib/types/database"
 
@@ -40,6 +42,25 @@ export default function AccountDetailPage() {
     }
   }
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
+  const getAccountUrl = (platform: string, username: string): string | null => {
+    if (!username) return null
+    
+    switch (platform.toLowerCase()) {
+      case 'tiktok':
+        return `https://www.tiktok.com/@${username}`
+      case 'instagram':
+        return `https://www.instagram.com/${username}/`
+      case 'youtube':
+        return `https://www.youtube.com/@${username}`
+      default:
+        return null
+    }
+  }
+
   if (!account) {
     return <div className="min-h-screen p-8">Loading...</div>
   }
@@ -47,9 +68,24 @@ export default function AccountDetailPage() {
   return (
     <div className="min-h-screen p-8">
       <div className="container mx-auto space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">{account.username}</h1>
-          <p className="text-muted-foreground capitalize">{account.platform} Account</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">{account.username}</h1>
+            <p className="text-muted-foreground capitalize">{account.platform} Account</p>
+          </div>
+          {getAccountUrl(account.platform, account.username) && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                const url = getAccountUrl(account.platform, account.username)
+                if (url) window.open(url, '_blank', 'noopener,noreferrer')
+              }}
+              className="flex items-center gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View Profile
+            </Button>
+          )}
         </div>
 
         {/* Account Info */}
@@ -126,8 +162,8 @@ export default function AccountDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Video ID</TableHead>
+                    <TableHead>Video</TableHead>
+                    <TableHead>Posted Date</TableHead>
                     <TableHead className="text-right">Views</TableHead>
                     <TableHead className="text-right">Likes</TableHead>
                     <TableHead className="text-right">Comments</TableHead>
@@ -138,11 +174,20 @@ export default function AccountDetailPage() {
                   {posts.map((post) => (
                     <TableRow key={post.post_id}>
                       <TableCell>
-                        {post.surge_date
-                          ? new Date(post.surge_date).toLocaleDateString()
-                          : '-'}
+                        {post.posted_link ? (
+                          <a 
+                            href={post.posted_link} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-primary hover:underline line-clamp-2 max-w-md"
+                          >
+                            {post.post_caption || post.video_id || '-'}
+                          </a>
+                        ) : (
+                          <span className="line-clamp-2 max-w-md">{post.post_caption || post.video_id || '-'}</span>
+                        )}
                       </TableCell>
-                      <TableCell className="font-mono text-xs">{post.video_id || '-'}</TableCell>
+                      <TableCell>{post.surge_date ? formatDate(post.surge_date) : '-'}</TableCell>
                       <TableCell className="text-right">{post.views?.toLocaleString() || '0'}</TableCell>
                       <TableCell className="text-right">{post.likes?.toLocaleString() || '0'}</TableCell>
                       <TableCell className="text-right">{post.comments?.toLocaleString() || '0'}</TableCell>
