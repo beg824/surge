@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Surge Dashboard",
   description: "Internal dashboard for data visualization",
+  icons: {
+    icon: "/surge.png",
+  },
 }
 
 export default function RootLayout({
