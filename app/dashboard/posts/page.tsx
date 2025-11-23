@@ -22,6 +22,7 @@ export default function PostsPage() {
 
   const [posts, setPosts] = useState<TikTokPostingWithAccountAndClient[]>([])
   const [filteredPosts, setFilteredPosts] = useState<TikTokPostingWithAccountAndClient[]>([])
+  const [topPosts, setTopPosts] = useState<TikTokPostingWithAccountAndClient[]>([])
   const [accounts, setAccounts] = useState<any[]>([])
   const [clients, setClients] = useState<any[]>([])
   const [filters, setFilters] = useState({
@@ -165,6 +166,10 @@ export default function PostsPage() {
     return Array.from(categories).sort()
   }
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
   return (
     <div className="min-h-screen p-8">
       <div className="container mx-auto space-y-8">
@@ -245,7 +250,7 @@ export default function PostsPage() {
               <div>
                 <label className="text-sm font-medium mb-2 block">Search</label>
                 <Input
-                  placeholder="Video ID or caption..."
+                  placeholder="Video"
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                 />
@@ -292,12 +297,9 @@ export default function PostsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="cursor-pointer" onClick={() => handleSort('surge_date')}>
-                      Date {sortField === 'surge_date' && (sortDirection === 'asc' ? '↑' : '↓')}
-                    </TableHead>
-                    <TableHead>Video ID</TableHead>
                     <TableHead>Account</TableHead>
-                    <TableHead>Scheduled Date</TableHead>
+                    <TableHead>Video</TableHead>
+                    <TableHead className="whitespace-nowrap">Posted Date</TableHead>
                     <TableHead className="cursor-pointer text-right" onClick={() => handleSort('views')}>
                       Views {sortField === 'views' && (sortDirection === 'asc' ? '↑' : '↓')}
                     </TableHead>
@@ -310,35 +312,31 @@ export default function PostsPage() {
                     <TableHead className="cursor-pointer text-right" onClick={() => handleSort('shares')}>
                       Shares {sortField === 'shares' && (sortDirection === 'asc' ? '↑' : '↓')}
                     </TableHead>
-                    <TableHead>Link</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredPosts.map((post) => (
                     <TableRow key={post.post_id}>
-                      <TableCell>
-                        {post.surge_date
-                          ? new Date(post.surge_date).toLocaleDateString()
-                          : '-'}
-                      </TableCell>
-                      <TableCell className="font-mono text-xs">{post.video_id || '-'}</TableCell>
                       <TableCell>{post.accounts?.username || 'Unknown'}</TableCell>
                       <TableCell>
-                        {post.scheduled_date
-                          ? new Date(post.scheduled_date).toLocaleDateString()
-                          : '-'}
+                        {post.posted_link ? (
+                          <a 
+                            href={post.posted_link} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-primary hover:underline line-clamp-2 max-w-md"
+                          >
+                            {post.post_caption || post.video_id || '-'}
+                          </a>
+                        ) : (
+                          <span className="line-clamp-2 max-w-md">{post.post_caption || post.video_id || '-'}</span>
+                        )}
                       </TableCell>
+                      <TableCell>{post.surge_date ? formatDate(post.surge_date) : '-'}</TableCell>
                       <TableCell className="text-right">{post.views?.toLocaleString() || '0'}</TableCell>
                       <TableCell className="text-right">{post.likes?.toLocaleString() || '0'}</TableCell>
                       <TableCell className="text-right">{post.comments?.toLocaleString() || '0'}</TableCell>
                       <TableCell className="text-right">{post.shares?.toLocaleString() || '0'}</TableCell>
-                      <TableCell>
-                        {post.posted_link ? (
-                          <a href={post.posted_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                            View
-                          </a>
-                        ) : '-'}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

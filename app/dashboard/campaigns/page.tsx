@@ -87,8 +87,10 @@ export default function CampaignsPage() {
                       <TableCell className="font-medium">{campaign.campaign}</TableCell>
                       <TableCell>
                         <span className={`px-2 py-1 rounded text-xs ${
-                          campaign.status === 'active'
-                            ? 'bg-green-100 text-green-800'
+                          campaign.status?.toLowerCase() === 'active'
+                            ? 'bg-yellow-500 text-white'
+                            : campaign.status?.toLowerCase() === 'done'
+                            ? 'bg-green-500 text-white'
                             : 'bg-gray-100 text-gray-800'
                         }`}>
                           {campaign.status || 'unknown'}
