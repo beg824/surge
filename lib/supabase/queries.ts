@@ -339,11 +339,14 @@ export async function getCampaignStats() {
     .from('tiktok_posting')
     .select(`
       *,
+      accounts (*),
       clients (*)
     `)
     .not('client_id', 'is', null)
 
   if (error) throw error
+
+  const typedPosts = (posts || []) as TikTokPostingWithAccountAndClient[]
 
   const campaignMap = new Map<number, {
     campaign: string
@@ -356,7 +359,7 @@ export async function getCampaignStats() {
     dates: string[]
   }>()
 
-  posts?.forEach(post => {
+  typedPosts.forEach(post => {
     if (!post.client_id || !post.clients) return
 
     const existing = campaignMap.get(post.client_id) || {
@@ -370,7 +373,7 @@ export async function getCampaignStats() {
       dates: []
     }
 
-    existing.posts.push(post as TikTokPostingWithAccountAndClient)
+    existing.posts.push(post)
     existing.totalViews += post.views || 0
     existing.totalLikes += post.likes || 0
     existing.totalComments += post.comments || 0
