@@ -8,7 +8,22 @@ export async function getAllAccounts() {
     .select('*')
     .order('created_at', { ascending: false })
 
-  if (error) throw error
+  if (error) {
+    console.error('Supabase error in getAllAccounts:', error)
+    throw error
+  }
+  
+  // Debug: Log first few accounts to verify data
+  if (data && data.length > 0) {
+    console.log('getAllAccounts - First account:', {
+      account_id: data[0].account_id,
+      username: data[0].username,
+      views_count_total: data[0].views_count_total,
+      likes_count_total: data[0].likes_count_total,
+      media_count: data[0].media_count
+    })
+  }
+  
   return data as Account[]
 }
 
