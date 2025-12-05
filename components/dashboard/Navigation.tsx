@@ -25,9 +25,10 @@ export function Navigation() {
             <Image
               src="/surge.png"
               alt="Surge"
-              width={150}
-              height={60}
-              className="h-12 w-auto"
+              width={200}
+              height={80}
+              className="h-12 w-auto max-h-full object-contain"
+              style={{ backgroundColor: 'transparent' }}
               priority
             />
           </Link>

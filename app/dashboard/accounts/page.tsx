@@ -245,7 +245,7 @@ export default function AccountsPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>All Accounts</CardTitle>
+            <CardTitle>All Accounts</CardTitle>
                 <CardDescription>
                   Showing {filteredAccounts.length} account(s)
                   {lastUpdated && (

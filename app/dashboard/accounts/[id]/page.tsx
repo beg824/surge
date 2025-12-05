@@ -69,9 +69,9 @@ export default function AccountDetailPage() {
     <div className="min-h-screen p-8">
       <div className="container mx-auto space-y-8">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">{account.username}</h1>
-            <p className="text-muted-foreground capitalize">{account.platform} Account</p>
+        <div>
+          <h1 className="text-4xl font-bold mb-2">{account.username}</h1>
+          <p className="text-muted-foreground capitalize">{account.platform} Account</p>
           </div>
           {getAccountUrl(account.platform, account.username) && (
             <Button
